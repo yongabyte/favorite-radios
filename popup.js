@@ -67,6 +67,7 @@ function itemsMap(local,remote){
   }
   return map;
 }
+
 function cleanPopUp(){
   while(popup.firstChild){
     popup.removeChild(popup.firstChild);
