@@ -1,12 +1,14 @@
 'use strict';
+
 var localList;
 var remoteList;
+
 chrome.runtime.onInstalled.addListener(function() {
   chrome.tabs.create({url:"http://radio.garden"}, function(tab){
     chrome.tabs.onUpdated.addListener(function onLoadedListener (id , info) {
       if (info.status === 'complete' && id==tab.id) {
         chrome.tabs.onUpdated.removeListener(onLoadedListener);
-        chrome.tabs.sendMessage(tab.id, {initiate: true}, function(response) {
+        chrome.tabs.sendMessage(tab.id, {onInstall: true}, function(response) {
           compareLists(response.localList,id);
         });
       }
@@ -24,38 +26,43 @@ chrome.runtime.onMessage.addListener(
         local: localList,
         remote: remoteList
       }
-      console.log(lists);
       sendResponse(lists);
+    }
+    if (request.askForRemote){
+      chrome.storage.sync.get("favors",function(req){
+        console.log(req);
+        sendResponse(req.favors);
+      });
+      return true; //tell chrome to wait for a sync response
     }
 });
 
 function compareLists(local,tabId){
-
-  chrome.storage.sync.get("favors", function(rl) {
-  localList = local;
-  remoteList= rl.favors;
-  console.log(areListsEqual(local,rl.favors));
-  window.open("popup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=yes");
+  chrome.storage.sync.get("favors", function(req) {
+    let rl =  req.favors;
     if(!local|| local.length===0){
-      if(rl){
-        chrome.runtime.sendMessage(tabId,{remote: rl}, function(response) {
-          console.log(response.ack);
-        });
-      }
-    }else if(!rl.length) saveList(local);
+        if(rl){
+          chrome.tabs.sendMessage(tabId,{remote: rl}, function(response) {
+            console.log(response.ack);
+          });
+        }
+      }else if(!rl.length) saveList(local);
     else if(!areListsEqual(local,rl)){
         console.log("hello");
         localList = local;
         remoteList= rl;
-        window.open("popup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");  
+        window.open("mergePopup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
       }
   });
 }
 
 function areListsEqual(l1,l2){
-  var set = new Set(l1);
+  let set = new Set();
+  for(let i =0; i < l1.length;++i){
+    set.add(l1[i].name);
+  }
   for(let i = 0; i < l2.length; ++i){
-    if(!set.has(l2[i])) return false;
+    if(!set.has(l2[i].name)) return false;
   }
   return true;
 }

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    button {
+      padding: 5px 10px;
+      font-size: 15px;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid #ddd;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 16px;
+    }
+
+    th:first-child, td:first-child {
+        text-align: left;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2
+    }
+
+    .fa-check {
+        color: green;
+    }
+
+    .fa-remove {
+        color: red;
+    }    
+    </style>
+  </head>
+  <body>
+    <div id = "popup">
+    <div> There seems to be some conflicts when syncing your favorite radio station...</div>
+    <button id="mergeNow">Resolve Now</button>
+    </div>
+    <script src="mergePopup.js"></script>
+  </body>
+</html>
