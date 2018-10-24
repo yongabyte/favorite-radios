@@ -12,20 +12,18 @@ mergeNow.onclick = function(){
 function createTable(lists){
   cleanPopUp();
   table  = document.createElement('table');
-  firstRow();
+  insertTextRow(["station","local","remote"]);
   let map = itemsMap(lists.local,lists.remote);
   map.forEach(insertRow);
   popup.appendChild(table);
 }
 
-function firstRow(){
+function insertTextRow(texts){
   let row = table.insertRow();
-  let cell1 = row.insertCell();
-  let cell2 = row.insertCell();
-  let cell3 = row.insertCell();
-  cell1.innerHTML="station";
-  cell2.innerHTML="local";
-  cell3.innerHTML="remote";
+  for(let i = 0; i < texts.length; ++i){
+    let cell = row.insertCell();
+    cell.innerHTML=texts[i];
+  }
 }
 
 function insertRow(val, key, map) {
@@ -41,19 +39,19 @@ function insertRow(val, key, map) {
     }
   }
 
-function insertCheck(row){
+function insertIcon(row,className){
   let cell = row.insertCell();
-  let icon =  document.createElement("i"); 
-  icon.className ="fa fa-check";
+  let icon =  document.createElement("i");
+  icon.className = className;
   cell.append(icon);
 }
 
-function insertX(row){
-  let cell = row.insertCell();
-  let icon =  document.createElement("i"); 
-  icon.className ="fa fa-check";
-  cell.append(icon);
-  cell.append('<i class="fa fa-remove"></i>');
+function insertCheck(row){
+  insertIcon(row,"fa fa-check");
+}
+
+function insertX(row){ 
+  insertIcon(row,"fa fa-remove");
 }
 
 function itemsMap(local,remote){

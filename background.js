@@ -1,6 +1,8 @@
 'use strict';
+
 var localList;
 var remoteList;
+
 chrome.runtime.onInstalled.addListener(function() {
   chrome.tabs.create({url:"http://radio.garden"}, function(tab){
     chrome.tabs.onUpdated.addListener(function onLoadedListener (id , info) {
@@ -49,13 +51,13 @@ function compareLists(local,tabId){
         console.log("hello");
         localList = local;
         remoteList= rl;
-        window.open("popup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");  
+        window.open("mergePopup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
       }
   });
 }
 
 function areListsEqual(l1,l2){
-  var set = new Set();
+  let set = new Set();
   for(let i =0; i < l1.length;++i){
     set.add(l1[i].name);
   }
