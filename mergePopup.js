@@ -2,7 +2,9 @@
 
 let mergeNow = document.getElementById('mergeNow');
 let popup = document.getElementById("popup");
-
+let flag = undefined; //indicate which side are we selecting -1 unsave 1 saved
+let icon;
+let selected = new Set();
 mergeNow.onclick = function(){
   chrome.runtime.sendMessage({askForLists:true},function(lists){
     createLayout(lists);
@@ -34,6 +36,7 @@ function createLayout(lists){
 }
 
 function addTextNode(text,div) {
+  div.id = text;
   var newtext = document.createTextNode(text);
   div.appendChild(newtext);
 }
@@ -64,20 +67,64 @@ function createLis(ul,texts){
   for(let i = 0; i < texts.length; ++i){
     let li = document.createElement("li");
     li.innerHTML=texts[i];
+    li.id = texts[i];
+    li.addEventListener("click",liListener);
     rt.push(li);
   }
   appendChildren(ul,rt);
 }
 
+function liListener(evt){
+  let t = evt.currentTarget;
+  let pid = t.parentNode.parentNode.getAttribute("id");
+  if (!flag||flag == pid){
+    if(t.style.backgroundColor=="green"){
+      t.style.backgroundColor = "transparent";
+      selected.delete(t);
+      flag = undefined;
+    } else{
+      t.style.backgroundColor = "green";
+      selected.add(t);
+      flag = pid;
+      changeIcon(pid);
+    }
+  }
+}
+
+function changeIcon(pid){
+  if (pid ==="Unsaved")
+    icon.className = "fa fa-angle-double-down";
+  else icon.className = "fa fa-angle-double-up";
+}
+
 function createMiddleButton(div){
   let btn = document.createElement("BUTTON");
+  btn.addEventListener("click",function(){
+    if (flag ==="Unsaved"||flag==="Saved"){
+      let nodes = Array.from(selected);
+      selected = new Set();
+      let div;
+      if(flag ==="Unsaved") div = document.getElementById("Saved");
+      else div = document.getElementById("Unsaved");
+      div = div.childNodes[1];
+      removeSelf(nodes);
+      appendChildren(div,nodes);
+    }
+    flag = undefined;
+  });
   insertIcon(btn);
-  btn.fontSize = "30px";
   div.append(btn);
 }
 
+function removeSelf(ls){
+  for(let i  = 0; i < ls.length; ++i){
+    ls[i].remove();
+    ls[i].style.backgroundColor = "transparent";
+  }
+}
+
 function insertIcon(div){
-  let icon =  document.createElement("i");
+  icon =  document.createElement("i");
   icon.className = "fa fa-angle-double-down";
   div.append(icon);
 }
