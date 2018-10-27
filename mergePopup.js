@@ -5,6 +5,7 @@ let popup = document.getElementById("popup");
 let flag = undefined; //indicate which side are we selecting -1 unsave 1 saved
 let icon;
 let selected = new Set();
+let nameToDetail = new Map();
 mergeNow.onclick = function(){
   chrome.runtime.sendMessage({askForLists:true},function(lists){
     createLayout(lists);
@@ -31,13 +32,22 @@ function createLayout(lists){
   createMiddleButton(middle);
   createUl(right,ls.saved,"Saved");
   appendkids(div,[left,middle,right]);
+
+  let b = createBottomButton();
+  div.appendChild(b);
   popup.appendChild(div);
   div.className = "row";
+  resizeWindow();
 }
 
 function addTextNode(text,div) {
   div.id = text;
-  var newtext = document.createTextNode(text);
+  let t1 = "'Going to the Trash Can' list";
+  let t2 = "'Going to the Cloud' list";
+  if(text=="Unsaved") {
+    text = t1;
+  }else text = t2;
+  let newtext = document.createTextNode(text);
   div.appendChild(newtext);
 }
 
@@ -116,6 +126,26 @@ function createMiddleButton(div){
   div.append(btn);
 }
 
+function createBottomButton (){
+  let btn = document.createElement("button");
+  btn.innerHTML = "Confirm"
+  btn.className = "gridsquare";
+  btn.addEventListener("click",function(){
+    let div = document.getElementById("Saved");
+    div = div.childNodes[1];
+    let nodesList = div.childNodes;
+    let ls = [];
+    let i;
+    for (i =0; i < nodesList.length; ++i){
+      ls.push(nodesList[i].id);
+    }
+    for (i = 0; i < ls.length; ++i){
+      ls[i] = nameToDetail.get(ls[i]);
+    }
+    chrome.runtime.sendMessage({list: ls});
+  });
+  return btn;
+}
 function removeSelf(ls){
   for(let i  = 0; i < ls.length; ++i){
     ls[i].remove();
@@ -134,10 +164,12 @@ function twoLists(local,remote){
   let u = new Set();
   for(let j = 0; j < remote.length; ++j){
     s.add(remote[j].name);
+    nameToDetail.set(remote[j].name,remote[j]);
   }
   for(let i =0; i < local.length; ++i){
     if(!s.has(local[i].name)){
       u.add(local[i].name);
+      nameToDetail.set(local[i].name, local[i]);
     }
   }
   return {
@@ -151,3 +183,9 @@ function cleanPopUp(){
     popup.removeChild(popup.firstChild);
   }
 }
+
+function resizeWindow() {
+  let heightOffset = document.body.offsetHeight +10;
+  let widthOffset = document.body.offsetWidth+5;
+  window.resizeTo(widthOffset, heightOffset);
+};

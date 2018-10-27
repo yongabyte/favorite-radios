@@ -35,16 +35,14 @@ chrome.runtime.onMessage.addListener(
       });
       return true; //tell chrome to wait for a sync response
     }
+    if (request.list){
+      saveList(request.list);
+    }
 });
 
 function compareLists(local,tabId){
   chrome.storage.sync.get("favors", function(req) {
     let rl =  req.favors;
-    //TODO: rm
-    localList = local;
-    remoteList= rl;
-    window.open("mergePopup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
-
     if(!local|| local.length===0){
         if(rl){
           chrome.tabs.sendMessage(tabId,{remote: rl}, function(response) {
@@ -56,7 +54,7 @@ function compareLists(local,tabId){
         console.log("hello");
         localList = local;
         remoteList= rl;
-        window.open("mergePopup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
+        window.open("mergePopup.html", "extension_popup", "width=325,height=454,status=no,scrollbars=yes,resizable=yes");
       }
   });
 }
