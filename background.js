@@ -35,6 +35,9 @@ chrome.runtime.onMessage.addListener(
       });
       return true; //tell chrome to wait for a sync response
     }
+    if (request.list){
+      saveList(request.list);
+    }
 });
 
 function compareLists(local,tabId){
@@ -46,12 +49,12 @@ function compareLists(local,tabId){
             console.log(response.ack);
           });
         }
-      }else if(!rl.length) saveList(local);
+      }else if(!rl||!rl.length) saveList(local);
     else if(!areListsEqual(local,rl)){
         console.log("hello");
         localList = local;
         remoteList= rl;
-        window.open("mergePopup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
+        window.open("mergePopup.html", "extension_popup", "width=325,height=454,status=no,scrollbars=yes,resizable=yes");
       }
   });
 }
