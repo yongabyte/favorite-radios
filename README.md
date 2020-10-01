@@ -12,6 +12,10 @@ Make a browser that silently syncs the Favorites list on Radio Garden.
 - Save the updated list everytime user updates their Favorites station list on Radio Garden.
 - Sync it to their cloud.
 
-## Techs Used
- - Javascript
- - Chrome API
+### Installation Instructions
+
+1. Download this repo as a ZIP file from GitHub.
+1. Unzip the file and you should have a folder named favorite-radio.
+1. In Chrome go to the extensions page (chrome://extensions).
+1. Enable Developer Mode.
+1. Drag the favorite-radio folder anywhere on the page to import it.
