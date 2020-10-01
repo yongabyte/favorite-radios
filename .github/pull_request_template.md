@@ -1,7 +1,10 @@
 ### Your checklist for this pull request
 
-- [ ] Make sure you clean up the Git commit history for this PR
-- [ ] Check the commit's or even all commits' message styles matches our requested structure.
+- [] Make sure you clean up the Git commit history for this PR
+- [] Check the commit's or even all commits' message styles matches our requested structure.
+
+<!-- START pr-commits -->
+<!-- END pr-commits -->
 
 ## Further comments
 
