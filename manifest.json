@@ -9,7 +9,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://radio.garden/*"],
+      "matches": ["*://radio.garden/*"],
       "js": ["contentScript.js"]
     }
   ],

@@ -3,6 +3,7 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.onInstall === true){
       let ls = JSON.parse(localStorage.getItem("favorites-list"));
+      console.log(ls);
       sendResponse({localList:ls});
     }
     if(request.remote){
@@ -14,11 +15,13 @@ chrome.runtime.onMessage.addListener(
 if(!localStorage.getItem("favorites-list")){
   chrome.runtime.sendMessage({askForRemote: true}, function(list) {
     console.log(list);
+    localStorage.setItem('myCat', 'Tom');
     if(list){
       localStorage.setItem("favorites-list",JSON.stringify(list));
     }
   });
 }
+
 
 let addFavor = "icon-button mod-favorite mod-interactive mod-hide-border mod-no-hover";
 let removeFavor = "icon-button mod-favorite mod-interactive mod-active mod-hide-border mod-no-hover";
@@ -47,5 +50,14 @@ function onchanged(){
   let list = JSON.parse(localStorage.getItem("favorites-list"));
   chrome.runtime.sendMessage({updatedList: list}, function() {
     console.log("list updated");
+  });
+}
+
+
+function getCookies(domain, name, callback) {
+  chrome.cookies.get({"url": domain, "name": name}, function(cookie) {
+      if(callback) {
+          callback(cookie.value);
+      }
   });
 }
